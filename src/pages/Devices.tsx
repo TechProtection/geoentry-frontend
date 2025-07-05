@@ -54,10 +54,6 @@ export default function Devices() {
           <h1 className="text-2xl font-bold text-white">Dispositivos</h1>
           <p className="text-geo-text-muted">Gestiona todos los dispositivos registrados en el sistema</p>
         </div>
-        <Button className="bg-geo-blue hover:bg-geo-blue-dark">
-          <Plus className="h-4 w-4 mr-2" />
-          Agregar Dispositivo
-        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -77,17 +73,6 @@ export default function Devices() {
             </CardContent>
           </Card>
         ))}
-      </div>
-
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-geo-text-muted" />
-        <Input
-          placeholder="Buscar dispositivos por nombre, tipo o usuario..."
-          className="pl-10 bg-geo-darker border-geo-gray-light text-white placeholder:text-geo-text-muted"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
       </div>
 
       {/* Device List */}
@@ -149,24 +134,12 @@ export default function Devices() {
                             </p>
                             <p className="text-geo-text-muted text-xs">Hoy</p>
                           </div>
-                          <div className="text-center">
-                            <p className="text-2xl font-bold text-purple-400">{device.sensors?.length || 0}</p>
-                            <p className="text-geo-text-muted text-xs">Sensores</p>
-                          </div>
                         </div>
                       </div>
                     </div>
                     
                     <div className="flex flex-col space-y-2">
                       <span className="bg-green-600 text-white px-3 py-1 rounded text-sm">Activo</span>
-                      <div className="flex space-x-2">
-                        <Button variant="ghost" size="sm" className="text-geo-text hover:text-white">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
                     </div>
                   </div>
                 </div>

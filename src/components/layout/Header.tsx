@@ -22,30 +22,10 @@ export function Header() {
   return (
     <header className="h-16 bg-geo-gray border-b border-geo-gray-light flex items-center justify-between px-6">
       <div className="flex items-center">
-        <select className="bg-geo-darker border border-geo-gray-light text-white rounded px-3 py-1 text-sm">
-          <option>Español</option>
-          <option>English</option>
-        </select>
+
       </div>
       
       <div className="flex items-center space-x-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-geo-text hover:text-white hover:bg-geo-gray-light"
-        >
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Actualizar
-        </Button>
-        
-        <button className="text-geo-text hover:text-white">
-          <Bell className="h-5 w-5" />
-        </button>
-        
-        <button className="text-geo-text hover:text-white">
-          <Globe className="h-5 w-5" />
-        </button>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button

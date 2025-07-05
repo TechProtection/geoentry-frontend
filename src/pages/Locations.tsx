@@ -53,10 +53,6 @@ export default function Locations() {
           <h1 className="text-2xl font-bold text-white">Ubicaciones</h1>
           <p className="text-geo-text-muted">Gestiona todas las ubicaciones registradas en el sistema</p>
         </div>
-        <Button className="bg-geo-blue hover:bg-geo-blue-dark">
-          <Plus className="h-4 w-4 mr-2" />
-          Agregar Ubicación
-        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -78,16 +74,6 @@ export default function Locations() {
         ))}
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-geo-text-muted" />
-        <Input
-          placeholder="Buscar ubicaciones por nombre o dirección..."
-          className="pl-10 bg-geo-darker border-geo-gray-light text-white placeholder:text-geo-text-muted"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
 
       {/* Locations List */}
       <Card className="bg-geo-gray border-geo-gray-light">
@@ -131,10 +117,6 @@ export default function Locations() {
                             </span>
                           </div>
                           <div>
-                            <p className="text-geo-text-muted text-sm">Ocupación</p>
-                            <span className="bg-blue-600 text-white px-2 py-1 rounded text-xs">N/A</span>
-                          </div>
-                          <div>
                             <p className="text-geo-text-muted text-sm">Eventos Totales</p>
                             <p className="text-white font-semibold">
                               {events.filter(e => e.home_location_id === location.id).length}
@@ -151,18 +133,8 @@ export default function Locations() {
                         
                         <div className="mt-4 text-sm text-geo-text-muted">
                           <p>Coordenadas: {location.latitude}, {location.longitude}</p>
-                          <p>Última actualización: {new Date(location.updated_at).toLocaleString('es-ES')}</p>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex space-x-2">
-                      <Button variant="ghost" size="sm" className="text-geo-text hover:text-white">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
                     </div>
                   </div>
                 </div>
