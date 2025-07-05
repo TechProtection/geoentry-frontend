@@ -13,6 +13,8 @@ import {
   Globe
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { useLogout } from '@/hooks/useLogout';
 
 const navigationItems = [
   { name: 'Dashboard', href: '/', icon: Home },
@@ -25,6 +27,13 @@ const navigationItems = [
 
 export function Sidebar() {
   const location = useLocation();
+  const { user } = useAuth();
+  const { logout, loading } = useLogout();
+
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    await logout();
+  };
 
   return (
     <div className="w-64 bg-geo-gray border-r border-geo-gray-light flex flex-col">
@@ -34,7 +43,7 @@ export function Sidebar() {
           <MapPin className="h-8 w-8 text-geo-blue mr-2" />
           <div>
             <h1 className="text-xl font-bold text-white">GeoEntry</h1>
-            <p className="text-xs text-geo-text-muted">v1.0.0</p>
+            <p className="text-xs text-geo-text-muted">v3.0.0</p>
           </div>
         </div>
       </div>
@@ -79,18 +88,23 @@ export function Sidebar() {
             <User className="h-4 w-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">rlopezhuaman321</p>
-            <p className="text-xs text-geo-text-muted truncate">rlopezhuaman321@gmail.com</p>
+            <p className="text-sm font-medium text-white truncate">
+              {user?.user_metadata?.full_name || 'Usuario'}
+            </p>
+            <p className="text-xs text-geo-text-muted truncate">
+              {user?.email || 'Sin email'}
+            </p>
           </div>
         </div>
         
-        <Link
-          to="/login"
-          className="flex items-center w-full px-3 py-2 text-sm font-medium text-geo-text hover:bg-geo-gray-light hover:text-white rounded-md transition-colors"
+        <button
+          onClick={handleLogout}
+          disabled={loading}
+          className="flex items-center w-full px-3 py-2 text-sm font-medium text-geo-text hover:bg-geo-gray-light hover:text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <LogOut className="mr-3 h-4 w-4" />
-          Cerrar Sesión
-        </Link>
+          {loading ? 'Cerrando...' : 'Cerrar Sesión'}
+        </button>
       </div>
     </div>
   );

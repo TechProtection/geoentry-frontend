@@ -39,6 +39,7 @@ export function useLogout() {
       });
       return false;
     } finally {
+      localStorage.clear();
       setLoading(false);
     }
   };

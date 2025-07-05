@@ -54,7 +54,7 @@ export function Header() {
               className="text-geo-text hover:text-white hover:bg-geo-gray-light"
             >
               <User className="h-4 w-4 mr-2" />
-              {user?.email?.split('@')[0] || 'Usuario'}
+              {user?.user_metadata?.full_name || 'Usuario'}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-geo-gray border-geo-gray-light">

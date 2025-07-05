@@ -11,15 +11,19 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-const statsCards = [
-  { title: 'Ubicaciones', value: '1', icon: MapPin, color: 'text-blue-400' },
-  { title: 'Dispositivos', value: '1', icon: Smartphone, color: 'text-green-400' },
-  { title: 'Eventos Total', value: '2', icon: Activity, color: 'text-purple-400' },
-  { title: 'Eventos Hoy', value: '2', icon: Calendar, color: 'text-orange-400' },
-];
+import { useDevices, useDeviceStats } from '@/hooks/useDevices';
 
 export default function Dashboard() {
+  const { data: devices = [], isLoading: devicesLoading } = useDevices();
+  const stats = useDeviceStats(devices);
+
+  const statsCards = [
+    { title: 'Ubicaciones', value: '1', icon: MapPin, color: 'text-blue-400' },
+    { title: 'Dispositivos', value: stats.totalDevices.toString(), icon: Smartphone, color: 'text-green-400' },
+    { title: 'Eventos Total', value: '2', icon: Activity, color: 'text-purple-400' },
+    { title: 'Eventos Hoy', value: '2', icon: Calendar, color: 'text-orange-400' },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -121,19 +125,38 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-geo-darker rounded-md">
-                    <div className="flex items-center">
-                      <div className="h-2 w-2 bg-green-400 rounded-full mr-3"></div>
-                      <div>
-                        <p className="text-white font-medium">POCO X7 Pro</p>
-                        <p className="text-geo-text-muted text-sm">android 15</p>
+                  {devicesLoading ? (
+                    <div className="text-geo-text-muted text-center py-4">
+                      Cargando dispositivos...
+                    </div>
+                  ) : devices.length === 0 ? (
+                    <div className="text-geo-text-muted text-center py-4">
+                      No hay dispositivos registrados
+                    </div>
+                  ) : (
+                    devices.slice(0, 3).map((device) => (
+                      <div key={device.id} className="flex items-center justify-between p-4 bg-geo-darker rounded-md">
+                        <div className="flex items-center">
+                          <div className="h-2 w-2 bg-green-400 rounded-full mr-3"></div>
+                          <div>
+                            <p className="text-white font-medium">{device.name}</p>
+                            <p className="text-geo-text-muted text-sm">{device.type}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <span className="bg-green-600 text-white px-2 py-1 rounded text-xs">Activo</span>
+                          <p className="text-geo-text-muted text-xs mt-1">0 eventos</p>
+                        </div>
                       </div>
+                    ))
+                  )}
+                  {devices.length > 3 && (
+                    <div className="text-center pt-2">
+                      <p className="text-geo-text-muted text-sm">
+                        +{devices.length - 3} dispositivos más
+                      </p>
                     </div>
-                    <div className="text-right">
-                      <span className="bg-green-600 text-white px-2 py-1 rounded text-xs">Activo</span>
-                      <p className="text-geo-text-muted text-xs mt-1">2 eventos</p>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

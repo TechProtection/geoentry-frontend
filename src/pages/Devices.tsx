@@ -3,15 +3,47 @@ import { Smartphone, Edit, Trash2, Plus, Search, Activity, MapPin } from 'lucide
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
-const statsCards = [
-  { title: 'Total Dispositivos', value: '1', icon: Smartphone, color: 'text-blue-400' },
-  { title: 'Dispositivos Activos', value: '1', icon: Activity, color: 'text-green-400' },
-  { title: 'Fuera de Zona', value: '0', icon: MapPin, color: 'text-red-400' },
-  { title: 'Sin Actividad', value: '0', icon: Smartphone, color: 'text-gray-400' },
-];
+import { useDevices, useDeviceStats } from '@/hooks/useDevices';
+import { useState } from 'react';
 
 export default function Devices() {
+  const { data: devices = [], isLoading, error } = useDevices();
+  const stats = useDeviceStats(devices);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const statsCards = [
+    { title: 'Total Dispositivos', value: stats.totalDevices.toString(), icon: Smartphone, color: 'text-blue-400' },
+    { title: 'Dispositivos Activos', value: stats.activeDevices.toString(), icon: Activity, color: 'text-green-400' },
+    { title: 'Fuera de Zona', value: stats.devicesOutOfZone.toString(), icon: MapPin, color: 'text-red-400' },
+    { title: 'Sin Actividad', value: stats.inactiveDevices.toString(), icon: Smartphone, color: 'text-gray-400' },
+  ];
+
+  const filteredDevices = devices.filter(device =>
+    device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    device.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    device.profile?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-white">Cargando dispositivos...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-red-400">Error al cargar dispositivos: {error.message}</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -51,6 +83,8 @@ export default function Devices() {
         <Input
           placeholder="Buscar dispositivos por nombre, tipo o usuario..."
           className="pl-10 bg-geo-darker border-geo-gray-light text-white placeholder:text-geo-text-muted"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
@@ -58,66 +92,79 @@ export default function Devices() {
       <Card className="bg-geo-gray border-geo-gray-light">
         <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="bg-geo-darker p-6 rounded-lg">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start">
-                  <div className="h-12 w-12 bg-geo-blue rounded-lg flex items-center justify-center mr-4">
-                    <Smartphone className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-white font-semibold text-lg">POCO X7 Pro</h3>
-                    
-                    <div className="grid grid-cols-2 gap-4 mt-3">
-                      <div>
-                        <p className="text-geo-text-muted text-sm">Tipo:</p>
-                        <p className="text-white">android 15</p>
-                      </div>
-                      <div>
-                        <p className="text-geo-text-muted text-sm">Usuario:</p>
-                        <p className="text-white">N/A</p>
-                      </div>
-                      <div>
-                        <p className="text-geo-text-muted text-sm">Ubicación actual:</p>
-                        <p className="text-green-400">Hogar</p>
-                      </div>
-                      <div>
-                        <p className="text-geo-text-muted text-sm">Última actividad:</p>
-                        <p className="text-white">05/07/2025 14:22</p>
-                      </div>
-                    </div>
-                    
-                    <p className="text-geo-text-muted text-sm mt-3">Email: N/A</p>
-                    
-                    <div className="flex items-center space-x-6 mt-4">
-                      <div className="text-center">
-                        <p className="text-2xl font-bold text-blue-400">2</p>
-                        <p className="text-geo-text-muted text-xs">Total Eventos</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-2xl font-bold text-green-400">2</p>
-                        <p className="text-geo-text-muted text-xs">Hoy</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-2xl font-bold text-purple-400">1</p>
-                        <p className="text-geo-text-muted text-xs">Ubicaciones</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex flex-col space-y-2">
-                  <span className="bg-green-600 text-white px-3 py-1 rounded text-sm">Activo</span>
-                  <div className="flex space-x-2">
-                    <Button variant="ghost" size="sm" className="text-geo-text hover:text-white">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+            {filteredDevices.length === 0 ? (
+              <div className="text-center py-8">
+                <Smartphone className="h-12 w-12 text-geo-text-muted mx-auto mb-4" />
+                <p className="text-geo-text-muted">
+                  {devices.length === 0 ? 'No tienes dispositivos registrados' : 'No se encontraron dispositivos'}
+                </p>
               </div>
-            </div>
+            ) : (
+              filteredDevices.map((device) => (
+                <div key={device.id} className="bg-geo-darker p-6 rounded-lg">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start">
+                      <div className="h-12 w-12 bg-geo-blue rounded-lg flex items-center justify-center mr-4">
+                        <Smartphone className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-white font-semibold text-lg">{device.name}</h3>
+                        
+                        <div className="grid grid-cols-2 gap-4 mt-3">
+                          <div>
+                            <p className="text-geo-text-muted text-sm">Tipo:</p>
+                            <p className="text-white">{device.type}</p>
+                          </div>
+                          <div>
+                            <p className="text-geo-text-muted text-sm">Usuario:</p>
+                            <p className="text-white">{device.profile?.full_name || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <p className="text-geo-text-muted text-sm">Ubicación actual:</p>
+                            <p className="text-green-400">N/A</p>
+                          </div>
+                          <div>
+                            <p className="text-geo-text-muted text-sm">Última actividad:</p>
+                            <p className="text-white">{new Date(device.updated_at).toLocaleString('es-ES')}</p>
+                          </div>
+                        </div>
+                        
+                        <p className="text-geo-text-muted text-sm mt-3">
+                          Email: {device.profile?.email || 'N/A'}
+                        </p>
+                        
+                        <div className="flex items-center space-x-6 mt-4">
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-blue-400">0</p>
+                            <p className="text-geo-text-muted text-xs">Total Eventos</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-green-400">0</p>
+                            <p className="text-geo-text-muted text-xs">Hoy</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-purple-400">{device.sensors?.length || 0}</p>
+                            <p className="text-geo-text-muted text-xs">Sensores</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col space-y-2">
+                      <span className="bg-green-600 text-white px-3 py-1 rounded text-sm">Activo</span>
+                      <div className="flex space-x-2">
+                        <Button variant="ghost" size="sm" className="text-geo-text hover:text-white">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>
