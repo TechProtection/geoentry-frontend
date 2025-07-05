@@ -4,10 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useDevices, useDeviceStats } from '@/hooks/useDevices';
+import { useEvents } from '@/hooks/useEvents';
 import { useState } from 'react';
 
 export default function Devices() {
   const { data: devices = [], isLoading, error } = useDevices();
+  const { data: events = [] } = useEvents();
   const stats = useDeviceStats(devices);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -135,11 +137,16 @@ export default function Devices() {
                         
                         <div className="flex items-center space-x-6 mt-4">
                           <div className="text-center">
-                            <p className="text-2xl font-bold text-blue-400">0</p>
+                            <p className="text-2xl font-bold text-blue-400">
+                              {events.filter(e => e.device_id === device.id).length}
+                            </p>
                             <p className="text-geo-text-muted text-xs">Total Eventos</p>
                           </div>
                           <div className="text-center">
-                            <p className="text-2xl font-bold text-green-400">0</p>
+                            <p className="text-2xl font-bold text-green-400">
+                              {events.filter(e => e.device_id === device.id && 
+                                new Date(e.created_at || '').toDateString() === new Date().toDateString()).length}
+                            </p>
                             <p className="text-geo-text-muted text-xs">Hoy</p>
                           </div>
                           <div className="text-center">

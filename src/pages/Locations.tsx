@@ -4,10 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLocations, useLocationStats } from '@/hooks/useLocations';
+import { useEvents } from '@/hooks/useEvents';
 import { useState } from 'react';
 
 export default function Locations() {
   const { data: locations = [], isLoading, error } = useLocations();
+  const { data: events = [] } = useEvents();
   const stats = useLocationStats(locations);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -134,11 +136,16 @@ export default function Locations() {
                           </div>
                           <div>
                             <p className="text-geo-text-muted text-sm">Eventos Totales</p>
-                            <p className="text-white font-semibold">0</p>
+                            <p className="text-white font-semibold">
+                              {events.filter(e => e.home_location_id === location.id).length}
+                            </p>
                           </div>
                           <div>
                             <p className="text-geo-text-muted text-sm">Eventos (24h)</p>
-                            <p className="text-white font-semibold">0</p>
+                            <p className="text-white font-semibold">
+                              {events.filter(e => e.home_location_id === location.id && 
+                                new Date(e.created_at || '').toDateString() === new Date().toDateString()).length}
+                            </p>
                           </div>
                         </div>
                         

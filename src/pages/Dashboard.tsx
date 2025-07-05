@@ -13,18 +13,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDevices, useDeviceStats } from '@/hooks/useDevices';
 import { useLocations, useLocationStats } from '@/hooks/useLocations';
+import { useEvents, useEventStats } from '@/hooks/useEvents';
 
 export default function Dashboard() {
   const { data: devices = [], isLoading: devicesLoading } = useDevices();
   const { data: locations = [], isLoading: locationsLoading } = useLocations();
+  const { data: events = [], isLoading: eventsLoading } = useEvents();
   const deviceStats = useDeviceStats(devices);
   const locationStats = useLocationStats(locations);
+  const eventStats = useEventStats(events);
 
   const statsCards = [
     { title: 'Ubicaciones', value: locationStats.totalLocations.toString(), icon: MapPin, color: 'text-blue-400' },
     { title: 'Dispositivos', value: deviceStats.totalDevices.toString(), icon: Smartphone, color: 'text-green-400' },
-    { title: 'Eventos Total', value: '2', icon: Activity, color: 'text-purple-400' },
-    { title: 'Eventos Hoy', value: '2', icon: Calendar, color: 'text-orange-400' },
+    { title: 'Eventos Total', value: eventStats.totalEvents.toString(), icon: Activity, color: 'text-purple-400' },
+    { title: 'Eventos Hoy', value: eventStats.todayEvents.toString(), icon: Calendar, color: 'text-orange-400' },
   ];
 
   return (
@@ -129,7 +132,9 @@ export default function Dashboard() {
                           }`}>
                             {location.is_active ? 'Activo' : 'Inactivo'}
                           </span>
-                          <p className="text-geo-text-muted text-xs mt-1">0 eventos</p>
+                          <p className="text-geo-text-muted text-xs mt-1">
+                            {events.filter(e => e.home_location_id === location.id).length} eventos
+                          </p>
                         </div>
                       </div>
                     ))
@@ -175,7 +180,9 @@ export default function Dashboard() {
                         </div>
                         <div className="text-right">
                           <span className="bg-green-600 text-white px-2 py-1 rounded text-xs">Activo</span>
-                          <p className="text-geo-text-muted text-xs mt-1">0 eventos</p>
+                          <p className="text-geo-text-muted text-xs mt-1">
+                            {events.filter(e => e.device_id === device.id).length} eventos
+                          </p>
                         </div>
                       </div>
                     ))
@@ -299,29 +306,51 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center p-4 bg-geo-darker rounded-lg">
-                  <div className="h-2 w-2 bg-green-400 rounded-full mr-4"></div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-green-400 font-medium">Entrada</span>
-                      <span className="text-white text-sm">14:22</span>
-                    </div>
-                    <p className="text-geo-text-muted text-sm">Hogar</p>
-                    <p className="text-geo-text-muted text-xs">hace 9 minutos</p>
+                {eventsLoading ? (
+                  <div className="text-geo-text-muted text-center py-4">
+                    Cargando actividad...
                   </div>
-                </div>
-
-                <div className="flex items-center p-4 bg-geo-darker rounded-lg">
-                  <div className="h-2 w-2 bg-green-400 rounded-full mr-4"></div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-green-400 font-medium">Entrada</span>
-                      <span className="text-white text-sm">14:23</span>
-                    </div>
-                    <p className="text-geo-text-muted text-sm">Hogar</p>
-                    <p className="text-geo-text-muted text-xs">hace 8 minutos</p>
+                ) : eventStats.recentEvents.length === 0 ? (
+                  <div className="text-geo-text-muted text-center py-4">
+                    No hay actividad reciente
                   </div>
-                </div>
+                ) : (
+                  eventStats.recentEvents.map((event) => {
+                    const isEnter = event.type === 'ENTER';
+                    const eventDate = new Date(event.created_at || '');
+                    const now = new Date();
+                    const diffInMinutes = Math.floor((now.getTime() - eventDate.getTime()) / (1000 * 60));
+                    
+                    return (
+                      <div key={event.id} className="flex items-center p-4 bg-geo-darker rounded-lg">
+                        <div className={`h-2 w-2 rounded-full mr-4 ${
+                          isEnter ? 'bg-green-400' : 'bg-red-400'
+                        }`}></div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <span className={`font-medium ${
+                              isEnter ? 'text-green-400' : 'text-red-400'
+                            }`}>
+                              {isEnter ? 'Entrada' : 'Salida'}
+                            </span>
+                            <span className="text-white text-sm">
+                              {eventDate.toLocaleTimeString('es-ES', { 
+                                hour: '2-digit', 
+                                minute: '2-digit' 
+                              })}
+                            </span>
+                          </div>
+                          <p className="text-geo-text-muted text-sm">{event.home_location_name}</p>
+                          <p className="text-geo-text-muted text-xs">
+                            {diffInMinutes === 0 ? 'hace menos de 1 minuto' : 
+                             diffInMinutes === 1 ? 'hace 1 minuto' : 
+                             `hace ${diffInMinutes} minutos`}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </CardContent>
           </Card>

@@ -1,39 +1,130 @@
 
-import { Calendar, ArrowUp, ArrowDown, Download, Search } from 'lucide-react';
+import { Calendar, ArrowUp, ArrowDown, Download, Search, Filter, MapPin, Smartphone } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
-const statsCards = [
-  { title: 'Total Eventos', value: '2', icon: Calendar, color: 'text-blue-400' },
-  { title: 'Eventos Hoy', value: '2', icon: Calendar, color: 'text-green-400' },
-  { title: 'Entradas', value: '2', icon: ArrowUp, color: 'text-green-400' },
-  { title: 'Salidas', value: '0', icon: ArrowDown, color: 'text-red-400' },
-];
-
-const events = [
-  {
-    id: 1,
-    type: 'Entrada',
-    device: 'Dispositivo desconocido',
-    location: 'Hogar',
-    time: '05/07/2025 14:22:49',
-    icon: ArrowUp,
-    color: 'text-green-400'
-  },
-  {
-    id: 2,
-    type: 'Entrada',
-    device: 'Dispositivo desconocido',
-    location: 'Hogar',
-    time: '05/07/2025 14:23:41',
-    icon: ArrowUp,
-    color: 'text-green-400'
-  },
-];
+import { useEvents, useEventStats } from '@/hooks/useEvents';
+import { useDevices } from '@/hooks/useDevices';
+import { useState } from 'react';
 
 export default function Events() {
+  const { data: events = [], isLoading, error } = useEvents();
+  const { data: devices = [] } = useDevices();
+  const stats = useEventStats(events);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState('all');
+  const [filterLocation, setFilterLocation] = useState('all');
+  const [filterDevice, setFilterDevice] = useState('all');
+
+  // Helper functions
+  const getEventIcon = (type: string) => {
+    return type === 'ENTER' ? ArrowUp : ArrowDown;
+  };
+
+  const getEventColor = (type: string) => {
+    return type === 'ENTER' ? 'text-green-400' : 'text-red-400';
+  };
+
+  const getEventTypeText = (type: string) => {
+    return type === 'ENTER' ? 'Entrada' : 'Salida';
+  };
+
+  const getDeviceName = (deviceId: string | null) => {
+    if (!deviceId) return 'Dispositivo desconocido';
+    const device = devices.find(d => d.id === deviceId);
+    return device ? device.name : 'Dispositivo desconocido';
+  };
+
+  const statsCards = [
+    { title: 'Total Eventos', value: stats.totalEvents.toString(), icon: Calendar, color: 'text-blue-400' },
+    { title: 'Eventos Hoy', value: stats.todayEvents.toString(), icon: Calendar, color: 'text-green-400' },
+    { title: 'Entradas', value: stats.enterEvents.toString(), icon: ArrowUp, color: 'text-green-400' },
+    { title: 'Salidas', value: stats.exitEvents.toString(), icon: ArrowDown, color: 'text-red-400' },
+  ];
+
+  const filteredEvents = events.filter(event => {
+    const deviceName = getDeviceName(event.device_id);
+    const matchesSearch = event.home_location_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         event.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         deviceName.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesType = filterType === 'all' || 
+                       (filterType === 'enter' && event.type === 'ENTER') ||
+                       (filterType === 'exit' && event.type === 'EXIT');
+
+    const matchesLocation = filterLocation === 'all' || event.home_location_name === filterLocation;
+    
+    const matchesDevice = filterDevice === 'all' || event.device_id === filterDevice;
+
+    return matchesSearch && matchesType && matchesLocation && matchesDevice;
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-white">Cargando eventos...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-red-400">Error al cargar eventos: {error.message}</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Si no hay eventos en absoluto
+  if (events.length === 0) {
+    return (
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-white">Eventos de Proximidad</h1>
+            <p className="text-geo-text-muted">Historial completo de entradas y salidas de dispositivos</p>
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {statsCards.map((stat, index) => (
+            <Card key={index} className="bg-geo-gray border-geo-gray-light">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-geo-text-muted text-sm font-medium">{stat.title}</p>
+                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  </div>
+                  <div className={`p-2 rounded-full bg-geo-darker ${stat.color}`}>
+                    <stat.icon className="h-6 w-6" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Card className="bg-geo-gray border-geo-gray-light">
+          <CardContent className="p-8">
+            <div className="text-center">
+              <Calendar className="h-12 w-12 text-geo-text-muted mx-auto mb-4" />
+              <p className="text-geo-text-muted">
+                No hay eventos registrados. Los eventos aparecerán aquí cuando los dispositivos entren o salgan de las ubicaciones configuradas.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -42,11 +133,9 @@ export default function Events() {
           <h1 className="text-2xl font-bold text-white">Eventos de Proximidad</h1>
           <p className="text-geo-text-muted">Historial completo de entradas y salidas de dispositivos</p>
         </div>
-        <Button className="bg-geo-blue hover:bg-geo-blue-dark">
-          <Download className="h-4 w-4 mr-2" />
-          Exportar
-        </Button>
       </div>
+
+
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -67,85 +156,61 @@ export default function Events() {
         ))}
       </div>
 
-      {/* Filters */}
-      <Card className="bg-geo-gray border-geo-gray-light">
-        <CardHeader>
-          <CardTitle className="text-white flex items-center">
-            <Search className="h-5 w-5 mr-2" />
-            Filtros
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-geo-text-muted" />
-              <Input
-                placeholder="Buscar eventos..."
-                className="pl-10 bg-geo-darker border-geo-gray-light text-white placeholder:text-geo-text-muted"
-              />
-            </div>
-            <Select>
-              <SelectTrigger className="bg-geo-darker border-geo-gray-light text-white">
-                <SelectValue placeholder="Todos los tipos" />
-              </SelectTrigger>
-              <SelectContent className="bg-geo-darker border-geo-gray-light">
-                <SelectItem value="all">Todos los tipos</SelectItem>
-                <SelectItem value="entrada">Entrada</SelectItem>
-                <SelectItem value="salida">Salida</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select>
-              <SelectTrigger className="bg-geo-darker border-geo-gray-light text-white">
-                <SelectValue placeholder="Todas las ubicaciones" />
-              </SelectTrigger>
-              <SelectContent className="bg-geo-darker border-geo-gray-light">
-                <SelectItem value="all">Todas las ubicaciones</SelectItem>
-                <SelectItem value="hogar">Hogar</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select>
-              <SelectTrigger className="bg-geo-darker border-geo-gray-light text-white">
-                <SelectValue placeholder="Todos los dispositivos" />
-              </SelectTrigger>
-              <SelectContent className="bg-geo-darker border-geo-gray-light">
-                <SelectItem value="all">Todos los dispositivos</SelectItem>
-                <SelectItem value="poco">POCO X7 Pro</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Events History */}
       <Card className="bg-geo-gray border-geo-gray-light">
         <CardHeader>
-          <CardTitle className="text-white">Historial de Eventos (2)</CardTitle>
+          <CardTitle className="text-white">Historial de Eventos ({filteredEvents.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {events.map((event) => (
-              <div key={event.id} className="bg-geo-darker p-4 rounded-lg flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className={`p-2 rounded-full bg-geo-gray mr-4 ${event.color}`}>
-                    <event.icon className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <span className="bg-blue-600 text-white px-2 py-1 rounded text-xs">{event.type}</span>
-                      <span className="text-white font-medium">{event.device}</span>
-                    </div>
-                    <div className="flex items-center text-geo-text-muted text-sm mt-1">
-                      <span className="mr-4">📍 {event.location}</span>
-                      <span>📱 Dispositivo desconocido</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-white font-medium">{event.time.split(' ')[0]}</p>
-                  <p className="text-geo-text-muted text-sm">{event.time.split(' ')[1]}</p>
-                </div>
+            {filteredEvents.length === 0 ? (
+              <div className="text-center py-8">
+                <Calendar className="h-12 w-12 text-geo-text-muted mx-auto mb-4" />
+                <p className="text-geo-text-muted">
+                  {events.length === 0 ? 'No hay eventos registrados' : 'No se encontraron eventos con los filtros aplicados'}
+                </p>
               </div>
-            ))}
+            ) : (
+              filteredEvents.map((event) => {
+                const EventIcon = getEventIcon(event.type);
+                const eventColor = getEventColor(event.type);
+                const eventTypeText = getEventTypeText(event.type);
+                const eventDate = event.created_at ? new Date(event.created_at) : new Date();
+                
+                return (
+                  <div key={event.id} className="bg-geo-darker p-4 rounded-lg flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className={`p-2 rounded-full bg-geo-gray mr-4 ${eventColor}`}>
+                        <EventIcon className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            event.type === 'ENTER' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                          }`}>
+                            {eventTypeText}
+                          </span>
+                          <span className="text-white font-medium">
+                            {getDeviceName(event.device_id)}
+                          </span>
+                        </div>
+                        <div className="flex items-center text-geo-text-muted text-sm mt-1">
+                          <span className="mr-4">
+                            <MapPin className="h-3 w-3 inline mr-1" />
+                            {event.home_location_name}
+                          </span>
+                          <span>🧭 Distancia: {event.distance}m</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-white font-medium">{eventDate.toLocaleDateString('es-ES')}</p>
+                      <p className="text-geo-text-muted text-sm">{eventDate.toLocaleTimeString('es-ES')}</p>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </CardContent>
       </Card>
