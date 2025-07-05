@@ -1,73 +1,85 @@
-# Welcome to your Lovable project
+# GeoEntry
 
-## Project info
+GeoEntry es un sistema inteligente que activa tu hogar cuando estás cerca. Contamos con una cerradura electrónica, iluminación automática (sensores de luminicidad), control ambiental (temperatura) y aromatizadores para la fragancia del hogar, todo en una solución.
 
-**URL**: https://lovable.dev/projects/a07ce881-2e2e-4abd-85d3-7e12185d7bec
+## ¿Cómo puedo editar este proyecto?
 
-## How can I edit this code?
+Sigue estos pasos para trabajar en el proyecto localmente:
 
-There are several ways of editing your application.
+### Requisitos previos
 
-**Use Lovable**
+Asegúrate de tener instalado:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a07ce881-2e2e-4abd-85d3-7e12185d7bec) and start prompting.
+- Node.js y npm - [Guía de instalación](https://nodejs.org/)
+- Git - [Guía de instalación](https://git-scm.com/)
 
-Changes made via Lovable will be committed automatically to this repo.
+### Pasos para configurar el proyecto
 
-**Use your preferred IDE**
+1. **Clona el repositorio**  
+   Usa el siguiente comando para clonar el repositorio:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+   ```sh
+   git clone <URL_DEL_REPOSITORIO>
+   ```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+2. **Navega al directorio del proyecto**  
+   ```sh
+   cd geoentry-frontend
+   ```
 
-Follow these steps:
+3. **Instala las dependencias**  
+   Ejecuta el siguiente comando para instalar las dependencias necesarias:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+   ```sh
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+4. **Inicia el servidor de desarrollo**  
+   Para iniciar el servidor con recarga automática, ejecuta:
 
-# Step 3: Install the necessary dependencies.
-npm i
+   ```sh
+   npm run dev
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+   El proyecto estará disponible en `http://localhost:3000`.
 
-**Edit a file directly in GitHub**
+## Tecnologías utilizadas
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Este proyecto está construido con:
 
-**Use GitHub Codespaces**
+- **Vite**: Herramienta de desarrollo rápida para aplicaciones web modernas.
+- **TypeScript**: Superset de JavaScript que añade tipado estático.
+- **React**: Biblioteca para construir interfaces de usuario.
+- **shadcn-ui**: Componentes accesibles y personalizables.
+- **Tailwind CSS**: Framework de utilidades CSS para un diseño rápido y moderno.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## ¿Cómo puedo desplegar este proyecto?
 
-## What technologies are used for this project?
+Para desplegar el proyecto, puedes usar cualquier servicio de hosting compatible con aplicaciones web modernas, como:
 
-This project is built with:
+- **Vercel**: [Guía de despliegue con Vercel](https://vercel.com/docs)
+- **Netlify**: [Guía de despliegue con Netlify](https://docs.netlify.com/)
+- **GitHub Pages**: [Guía de despliegue con GitHub Pages](https://pages.github.com/)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Contribuciones
 
-## How can I deploy this project?
+Si deseas contribuir al proyecto, sigue estos pasos:
 
-Simply open [Lovable](https://lovable.dev/projects/a07ce881-2e2e-4abd-85d3-7e12185d7bec) and click on Share -> Publish.
+1. Haz un fork del repositorio.
+2. Crea una rama para tu funcionalidad o corrección de errores:  
+   ```sh
+   git checkout -b mi-nueva-funcionalidad
+   ```
+3. Realiza tus cambios y haz un commit:  
+   ```sh
+   git commit -m "Añadida nueva funcionalidad"
+   ```
+4. Sube tus cambios a tu fork:  
+   ```sh
+   git push origin mi-nueva-funcionalidad
+   ```
+5. Abre un Pull Request en el repositorio original.
 
-## Can I connect a custom domain to my Lovable project?
+## Licencia
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Este proyecto está bajo la licencia [MIT](LICENSE).
