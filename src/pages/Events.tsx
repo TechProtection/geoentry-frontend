@@ -14,7 +14,6 @@ export default function Events() {
   const [filterLocation, setFilterLocation] = useState('all');
   const [filterDevice, setFilterDevice] = useState('all');
 
-  // Helper functions
   const getEventIcon = (type: string) => {
     return type === 'enter' ? ArrowUp : ArrowDown;
   };
@@ -77,11 +76,10 @@ export default function Events() {
     );
   }
 
-  // Si no hay eventos en absoluto
   if (events.length === 0) {
     return (
       <div className="space-y-6">
-        {/* Header */}
+        {}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">Eventos de Proximidad</h1>
@@ -89,7 +87,7 @@ export default function Events() {
           </div>
         </div>
 
-        {/* Stats Cards */}
+        {}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {statsCards.map((stat, index) => (
             <Card key={index} className="bg-geo-gray border-geo-gray-light">
@@ -124,7 +122,7 @@ export default function Events() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Eventos de Proximidad</h1>
@@ -134,7 +132,7 @@ export default function Events() {
 
 
 
-      {/* Stats Cards */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => (
           <Card key={index} className="bg-geo-gray border-geo-gray-light">
@@ -153,7 +151,7 @@ export default function Events() {
         ))}
       </div>
 
-      {/* Events History */}
+      {}
       <Card className="bg-geo-gray border-geo-gray-light">
         <CardHeader>
           <CardTitle className="text-white">Historial de Eventos ({filteredEvents.length})</CardTitle>

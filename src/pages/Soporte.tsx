@@ -42,31 +42,28 @@ export default function Configuration() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Crear el enlace mailto
     const mailtoLink = `mailto:u202212338@upc.edu.pe?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
       `Nombre: ${formData.name}\nEmail: ${formData.email}\n\nMensaje:\n${formData.message}`
     )}`;
     
-    // Abrir el cliente de correo
     window.location.href = mailtoLink;
     
-    // Limpiar el formulario y cerrar el modal
     setFormData({ name: '', email: '', subject: '', message: '' });
     setIsDialogOpen(false);
   };
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {}
       <div>
         <h1 className="text-2xl font-bold text-white">Soporte</h1>
         <p className="text-geo-text-muted">Encuentra respuestas a las preguntas más comunes y contacta con nuestro equipo de soporte técnico</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Settings */}
+        {}
         <div className="lg:col-span-2 space-y-6">
 
-          {/* FAQ Section */}
+          {}
           <Card className="bg-geo-gray border-geo-gray-light">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
@@ -95,7 +92,7 @@ export default function Configuration() {
           </Card>
         </div>
 
-        {/* Right Column - Support */}
+        {}
         <div>
           <Card className="bg-geo-gray border-geo-gray-light">
             <CardHeader>
