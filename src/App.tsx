@@ -12,7 +12,7 @@ import Locations from "./pages/Locations";
 import Devices from "./pages/Devices";
 import Events from "./pages/Events";
 import Analytics from "./pages/Analytics";
-import Configuration from "./pages/Configuration";
+import Configuration from "./pages/Soporte";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 
@@ -38,7 +38,7 @@ const App = () => (
               <Route path="dispositivos" element={<Devices />} />
               <Route path="eventos" element={<Events />} />
               <Route path="analiticas" element={<Analytics />} />
-              <Route path="configuracion" element={<Configuration />} />
+              <Route path="soporte" element={<Configuration />} />
             </Route>
           </Routes>
         </BrowserRouter>

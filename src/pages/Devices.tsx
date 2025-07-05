@@ -106,14 +106,6 @@ export default function Devices() {
                             <p className="text-geo-text-muted text-sm">Usuario:</p>
                             <p className="text-white">{device.profile?.full_name || 'N/A'}</p>
                           </div>
-                          <div>
-                            <p className="text-geo-text-muted text-sm">Ubicación actual:</p>
-                            <p className="text-green-400">N/A</p>
-                          </div>
-                          <div>
-                            <p className="text-geo-text-muted text-sm">Última actividad:</p>
-                            <p className="text-white">{new Date(device.updated_at).toLocaleString('es-ES')}</p>
-                          </div>
                         </div>
                         
                         <p className="text-geo-text-muted text-sm mt-3">

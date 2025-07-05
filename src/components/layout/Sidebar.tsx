@@ -7,10 +7,10 @@ import {
   Smartphone, 
   Activity, 
   BarChart3, 
-  Settings,
   User,
   LogOut,
-  Globe
+  Globe,
+  HelpCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -22,7 +22,7 @@ const navigationItems = [
   { name: 'Dispositivos', href: '/dispositivos', icon: Smartphone },
   { name: 'Eventos', href: '/eventos', icon: Activity },
   { name: 'Analíticas', href: '/analiticas', icon: BarChart3 },
-  { name: 'Configuración', href: '/configuracion', icon: Settings },
+  { name: 'Soporte', href: '/soporte', icon: HelpCircle },
 ];
 
 export function Sidebar() {

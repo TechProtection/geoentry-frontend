@@ -22,84 +22,13 @@ export default function Configuration() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Configuración</h1>
-        <p className="text-geo-text-muted">Personaliza las preferencias y ajustes del sistema</p>
+        <h1 className="text-2xl font-bold text-white">Soporte</h1>
+        <p className="text-geo-text-muted">Encuentra respuestas a las preguntas más comunes y contacta con nuestro equipo de soporte técnico</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Settings */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Notifications */}
-          <Card className="bg-geo-gray border-geo-gray-light">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Bell className="h-5 w-5 mr-2" />
-                Notificaciones
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white font-medium">Notificaciones en la aplicación</p>
-                  <p className="text-geo-text-muted text-sm">Recibir alertas en tiempo real</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white font-medium">Notificaciones por email</p>
-                  <p className="text-geo-text-muted text-sm">Recibir resúmenes por correo electrónico</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white font-medium">Sonidos de notificación</p>
-                  <p className="text-geo-text-muted text-sm">Reproducir sonidos para eventos importantes</p>
-                </div>
-                <Switch />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* System Settings */}
-          <Card className="bg-geo-gray border-geo-gray-light">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <SettingsIcon className="h-5 w-5 mr-2" />
-                Sistema
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white font-medium">Actualización automática</p>
-                  <p className="text-geo-text-muted text-sm">Actualizar datos automáticamente</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white font-medium">Intervalo de actualización</p>
-                  <p className="text-geo-text-muted text-sm">Frecuencia de actualización de datos</p>
-                </div>
-                <Select defaultValue="30">
-                  <SelectTrigger className="w-32 bg-geo-darker border-geo-gray-light text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-geo-darker border-geo-gray-light">
-                    <SelectItem value="10">10 segundos</SelectItem>
-                    <SelectItem value="30">30 segundos</SelectItem>
-                    <SelectItem value="60">1 minuto</SelectItem>
-                    <SelectItem value="300">5 minutos</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* FAQ Section */}
           <Card className="bg-geo-gray border-geo-gray-light">
@@ -165,16 +94,6 @@ export default function Configuration() {
               </Button>
             </CardContent>
           </Card>
-
-          {/* Actions */}
-          <div className="mt-6 flex space-x-3">
-            <Button variant="outline" className="flex-1 border-geo-gray-light text-white hover:bg-geo-gray-light">
-              Restaurar por Defecto
-            </Button>
-            <Button className="flex-1 bg-geo-blue hover:bg-geo-blue-dark">
-              Guardar Configuración
-            </Button>
-          </div>
         </div>
       </div>
     </div>
