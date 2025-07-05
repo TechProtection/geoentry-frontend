@@ -12,14 +12,17 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDevices, useDeviceStats } from '@/hooks/useDevices';
+import { useLocations, useLocationStats } from '@/hooks/useLocations';
 
 export default function Dashboard() {
   const { data: devices = [], isLoading: devicesLoading } = useDevices();
-  const stats = useDeviceStats(devices);
+  const { data: locations = [], isLoading: locationsLoading } = useLocations();
+  const deviceStats = useDeviceStats(devices);
+  const locationStats = useLocationStats(locations);
 
   const statsCards = [
-    { title: 'Ubicaciones', value: '1', icon: MapPin, color: 'text-blue-400' },
-    { title: 'Dispositivos', value: stats.totalDevices.toString(), icon: Smartphone, color: 'text-green-400' },
+    { title: 'Ubicaciones', value: locationStats.totalLocations.toString(), icon: MapPin, color: 'text-blue-400' },
+    { title: 'Dispositivos', value: deviceStats.totalDevices.toString(), icon: Smartphone, color: 'text-green-400' },
     { title: 'Eventos Total', value: '2', icon: Activity, color: 'text-purple-400' },
     { title: 'Eventos Hoy', value: '2', icon: Calendar, color: 'text-orange-400' },
   ];
@@ -98,19 +101,46 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-geo-darker rounded-md">
-                    <div className="flex items-center">
-                      <div className="h-2 w-2 bg-green-400 rounded-full mr-3"></div>
-                      <div>
-                        <p className="text-white font-medium">Hogar</p>
-                        <p className="text-geo-text-muted text-sm">Radio 50m</p>
+                  {locationsLoading ? (
+                    <div className="text-geo-text-muted text-center py-4">
+                      Cargando ubicaciones...
+                    </div>
+                  ) : locations.length === 0 ? (
+                    <div className="text-geo-text-muted text-center py-4">
+                      No hay ubicaciones registradas
+                    </div>
+                  ) : (
+                    locations.slice(0, 3).map((location) => (
+                      <div key={location.id} className="flex items-center justify-between p-4 bg-geo-darker rounded-md">
+                        <div className="flex items-center">
+                          <div className={`h-2 w-2 rounded-full mr-3 ${
+                            location.is_active ? 'bg-green-400' : 'bg-gray-400'
+                          }`}></div>
+                          <div>
+                            <p className="text-white font-medium">{location.name}</p>
+                            <p className="text-geo-text-muted text-sm">Radio {location.radius}m</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            location.is_active 
+                              ? 'bg-green-600 text-white' 
+                              : 'bg-gray-600 text-gray-300'
+                          }`}>
+                            {location.is_active ? 'Activo' : 'Inactivo'}
+                          </span>
+                          <p className="text-geo-text-muted text-xs mt-1">0 eventos</p>
+                        </div>
                       </div>
+                    ))
+                  )}
+                  {locations.length > 3 && (
+                    <div className="text-center pt-2">
+                      <p className="text-geo-text-muted text-sm">
+                        +{locations.length - 3} ubicaciones más
+                      </p>
                     </div>
-                    <div className="text-right">
-                      <span className="bg-blue-600 text-white px-2 py-1 rounded text-xs">Ocupado</span>
-                      <p className="text-geo-text-muted text-xs mt-1">2 eventos</p>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
