@@ -110,8 +110,8 @@ export const useEventStats = (events: ProximityEvent[] = []) => {
     return eventDate.toDateString() === today.toDateString();
   }).length;
   
-  const enterEvents = events.filter(event => event.type === 'ENTER').length;
-  const exitEvents = events.filter(event => event.type === 'EXIT').length;
+  const enterEvents = events.filter(event => event.type === 'enter').length;
+  const exitEvents = events.filter(event => event.type === 'exit').length;
   
   const recentEvents = events
     .sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime())

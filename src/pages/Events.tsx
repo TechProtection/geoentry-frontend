@@ -1,9 +1,6 @@
 
-import { Calendar, ArrowUp, ArrowDown, Download, Search, Filter, MapPin, Smartphone } from 'lucide-react';
+import { Calendar, ArrowUp, ArrowDown, MapPin } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useEvents, useEventStats } from '@/hooks/useEvents';
 import { useDevices } from '@/hooks/useDevices';
 import { useState } from 'react';
@@ -19,15 +16,15 @@ export default function Events() {
 
   // Helper functions
   const getEventIcon = (type: string) => {
-    return type === 'ENTER' ? ArrowUp : ArrowDown;
+    return type === 'enter' ? ArrowUp : ArrowDown;
   };
 
   const getEventColor = (type: string) => {
-    return type === 'ENTER' ? 'text-green-400' : 'text-red-400';
+    return type === 'enter' ? 'text-green-400' : 'text-red-400';
   };
 
   const getEventTypeText = (type: string) => {
-    return type === 'ENTER' ? 'Entrada' : 'Salida';
+    return type === 'enter' ? 'Entrada' : 'Salida';
   };
 
   const getDeviceName = (deviceId: string | null) => {
@@ -50,8 +47,8 @@ export default function Events() {
                          deviceName.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesType = filterType === 'all' || 
-                       (filterType === 'enter' && event.type === 'ENTER') ||
-                       (filterType === 'exit' && event.type === 'EXIT');
+                       (filterType === 'enter' && event.type === 'enter') ||
+                       (filterType === 'exit' && event.type === 'exit');
 
     const matchesLocation = filterLocation === 'all' || event.home_location_name === filterLocation;
     
@@ -186,7 +183,7 @@ export default function Events() {
                       <div>
                         <div className="flex items-center space-x-2">
                           <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            event.type === 'ENTER' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                            event.type === 'enter' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
                           }`}>
                             {eventTypeText}
                           </span>

@@ -316,7 +316,7 @@ export default function Dashboard() {
                   </div>
                 ) : (
                   eventStats.recentEvents.map((event) => {
-                    const isEnter = event.type === 'ENTER';
+                    const isEnter = event.type === 'enter';
                     const eventDate = new Date(event.created_at || '');
                     const now = new Date();
                     const diffInMinutes = Math.floor((now.getTime() - eventDate.getTime()) / (1000 * 60));
