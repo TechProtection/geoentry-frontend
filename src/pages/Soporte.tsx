@@ -1,10 +1,15 @@
 
-import { Bell, Mail, Volume2, Settings as SettingsIcon, HelpCircle, ChevronDown } from 'lucide-react';
+import { Bell, Mail, Volume2, Settings as SettingsIcon, HelpCircle, ChevronDown, Send } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { useState } from 'react';
 
 const faqs = [
   "¿Cómo funciona el sistema de geofencing?",
@@ -18,6 +23,37 @@ const faqs = [
 ];
 
 export default function Configuration() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Crear el enlace mailto
+    const mailtoLink = `mailto:u202212338@upc.edu.pe?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
+      `Nombre: ${formData.name}\nEmail: ${formData.email}\n\nMensaje:\n${formData.message}`
+    )}`;
+    
+    // Abrir el cliente de correo
+    window.location.href = mailtoLink;
+    
+    // Limpiar el formulario y cerrar el modal
+    setFormData({ name: '', email: '', subject: '', message: '' });
+    setIsDialogOpen(false);
+  };
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -88,10 +124,93 @@ export default function Configuration() {
                 </div>
               </div>
               
-              <Button className="w-full bg-geo-blue hover:bg-geo-blue-dark">
-                <Mail className="h-4 w-4 mr-2" />
-                Contactar Soporte
-              </Button>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full bg-geo-blue hover:bg-geo-blue-dark">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Contactar Soporte
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-geo-gray border-geo-gray-light max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="text-white">Contactar Soporte Técnico</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name" className="text-white">Nombre</Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="bg-geo-darker border-geo-gray-light text-white placeholder:text-geo-text-muted"
+                        placeholder="Tu nombre completo"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-white">Email</Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="bg-geo-darker border-geo-gray-light text-white placeholder:text-geo-text-muted"
+                        placeholder="tu.email@ejemplo.com"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="subject" className="text-white">Asunto</Label>
+                      <Input
+                        id="subject"
+                        name="subject"
+                        type="text"
+                        value={formData.subject}
+                        onChange={handleInputChange}
+                        className="bg-geo-darker border-geo-gray-light text-white placeholder:text-geo-text-muted"
+                        placeholder="Resumen del problema o consulta"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="message" className="text-white">Mensaje</Label>
+                      <Textarea
+                        id="message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        className="bg-geo-darker border-geo-gray-light text-white placeholder:text-geo-text-muted min-h-[120px]"
+                        placeholder="Describe tu problema o consulta en detalle..."
+                        required
+                      />
+                    </div>
+                    
+                    <DialogFooter className="flex gap-2 pt-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsDialogOpen(false)}
+                        className="border-geo-gray-light text-geo-text-muted hover:bg-geo-darker"
+                      >
+                        Cancelar
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="bg-geo-blue hover:bg-geo-blue-dark"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        Enviar Email
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
         </div>
