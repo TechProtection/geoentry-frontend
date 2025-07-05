@@ -47,7 +47,7 @@ export const useLocations = () => {
     queryFn: fetchMyLocations,
     enabled: !!session?.user?.id,
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000, // 5 minutos
+    staleTime: 5 * 60 * 1000, 
   });
 };
 
@@ -55,7 +55,7 @@ export const useLocationStats = (locations: Location[] = []) => {
   const totalLocations = locations.length;
   const activeLocations = locations.filter(location => location.is_active).length;
   const inactiveLocations = locations.filter(location => !location.is_active).length;
-  const locationsWithEvents = 0; // Implementar lógica según eventos
+  const locationsWithEvents = 0; 
 
   return {
     totalLocations,
