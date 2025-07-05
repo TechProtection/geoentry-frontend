@@ -47,7 +47,7 @@ export default function Locations() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Ubicaciones</h1>
@@ -55,7 +55,7 @@ export default function Locations() {
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => (
           <Card key={index} className="bg-geo-gray border-geo-gray-light">
@@ -75,7 +75,7 @@ export default function Locations() {
       </div>
 
 
-      {/* Locations List */}
+      {}
       <Card className="bg-geo-gray border-geo-gray-light">
         <CardHeader>
           <CardTitle className="text-white">Todas las Ubicaciones</CardTitle>
