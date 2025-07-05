@@ -49,13 +49,13 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {}
       <div>
         <h1 className="text-2xl font-bold text-white">Dashboard</h1>
         <p className="text-geo-text-muted">Monitoreo y análisis de ubicaciones en tiempo real</p>
       </div>
 
-      {/* Tabs */}
+      {}
       <Tabs defaultValue="resumen" className="w-full">
         <TabsList className="grid w-full grid-cols-4 bg-geo-gray border-geo-gray-light">
           <TabsTrigger 
@@ -88,9 +88,9 @@ export default function Dashboard() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Resumen Tab */}
+        {}
         <TabsContent value="resumen" className="space-y-6">
-          {/* Stats Cards */}
+          {}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {statsCards.map((stat, index) => (
               <Card key={index} className="bg-geo-gray border-geo-gray-light">
@@ -109,9 +109,9 @@ export default function Dashboard() {
             ))}
           </div>
 
-          {/* Main Content Grid */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Ubicaciones */}
+            {}
             <Card className="bg-geo-gray border-geo-gray-light">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
@@ -167,7 +167,7 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            {/* Dispositivos */}
+            {}
             <Card className="bg-geo-gray border-geo-gray-light">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
@@ -217,12 +217,12 @@ export default function Dashboard() {
           </div>
         </TabsContent>
 
-        {/* Mapa Tab */}
+        {}
         <TabsContent value="mapa" className="space-y-6">
           <InteractiveMap />
         </TabsContent>
 
-        {/* Analíticas Tab */}
+        {}
         <TabsContent value="analiticas" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="bg-geo-gray border-geo-gray-light">
@@ -419,7 +419,7 @@ export default function Dashboard() {
           </div>
         </TabsContent>
 
-        {/* Actividad Tab */}
+        {}
         <TabsContent value="actividad" className="space-y-6">
           <Card className="bg-geo-gray border-geo-gray-light">
             <CardHeader>
