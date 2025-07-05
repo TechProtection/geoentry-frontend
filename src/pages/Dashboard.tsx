@@ -11,9 +11,25 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  BarChart as RechartsBarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts';
 import { useDevices, useDeviceStats } from '@/hooks/useDevices';
 import { useLocations, useLocationStats } from '@/hooks/useLocations';
 import { useEvents, useEventStats } from '@/hooks/useEvents';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import InteractiveMap from '@/components/InteractiveMap';
 
 export default function Dashboard() {
   const { data: devices = [], isLoading: devicesLoading } = useDevices();
@@ -22,6 +38,7 @@ export default function Dashboard() {
   const deviceStats = useDeviceStats(devices);
   const locationStats = useLocationStats(locations);
   const eventStats = useEventStats(events);
+  const { chartData, deviceAnalysis } = useAnalytics();
 
   const statsCards = [
     { title: 'Ubicaciones', value: locationStats.totalLocations.toString(), icon: MapPin, color: 'text-blue-400' },
@@ -202,22 +219,7 @@ export default function Dashboard() {
 
         {/* Mapa Tab */}
         <TabsContent value="mapa" className="space-y-6">
-          <Card className="bg-geo-gray border-geo-gray-light">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Map className="h-5 w-5 mr-2" />
-                Vista de Mapa
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-96 bg-geo-darker rounded-lg flex items-center justify-center">
-                <div className="text-center">
-                  <Map className="h-12 w-12 text-geo-text-muted mx-auto mb-4" />
-                  <p className="text-geo-text-muted">Cargando mapa...</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <InteractiveMap />
         </TabsContent>
 
         {/* Analíticas Tab */}
@@ -231,12 +233,41 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64 bg-geo-darker rounded-lg flex items-center justify-center">
-                  <div className="text-center">
-                    <BarChart className="h-8 w-8 text-geo-text-muted mx-auto mb-2" />
-                    <p className="text-geo-text-muted text-sm">Sin datos para mostrar</p>
+                {chartData.timeChart.length > 0 ? (
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartsBarChart data={chartData.timeChart}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#2a3038" />
+                        <XAxis 
+                          dataKey="location" 
+                          stroke="#8b949e" 
+                          fontSize={12}
+                        />
+                        <YAxis 
+                          stroke="#8b949e" 
+                          fontSize={12}
+                        />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: '#1e2329', 
+                            border: '1px solid #2a3038',
+                            borderRadius: '6px',
+                            color: '#e4e7eb'
+                          }}
+                        />
+                        <Bar dataKey="Tiempo Dentro (min)" fill="#4F6FFF" />
+                        <Bar dataKey="Tiempo Fuera (min)" fill="#ef4444" />
+                      </RechartsBarChart>
+                    </ResponsiveContainer>
                   </div>
-                </div>
+                ) : (
+                  <div className="h-64 bg-geo-darker rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <BarChart className="h-8 w-8 text-geo-text-muted mx-auto mb-2" />
+                      <p className="text-geo-text-muted text-sm">Sin datos para mostrar</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -248,12 +279,55 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64 bg-geo-darker rounded-lg flex items-center justify-center">
-                  <div className="text-center">
-                    <Activity className="h-8 w-8 text-geo-text-muted mx-auto mb-2" />
-                    <p className="text-geo-text-muted text-sm">Sin datos para mostrar</p>
+                {chartData.activityChart.length > 0 ? (
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={chartData.activityChart}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#2a3038" />
+                        <XAxis 
+                          dataKey="hour" 
+                          stroke="#8b949e" 
+                          fontSize={12}
+                        />
+                        <YAxis 
+                          stroke="#8b949e" 
+                          fontSize={12}
+                        />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: '#1e2329', 
+                            border: '1px solid #2a3038',
+                            borderRadius: '6px',
+                            color: '#e4e7eb'
+                          }}
+                        />
+                        <Area 
+                          type="monotone" 
+                          dataKey="enters" 
+                          stackId="1"
+                          stroke="#10b981" 
+                          fill="#10b981" 
+                          fillOpacity={0.6}
+                        />
+                        <Area 
+                          type="monotone" 
+                          dataKey="exits" 
+                          stackId="1"
+                          stroke="#ef4444" 
+                          fill="#ef4444" 
+                          fillOpacity={0.6}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
                   </div>
-                </div>
+                ) : (
+                  <div className="h-64 bg-geo-darker rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <Activity className="h-8 w-8 text-geo-text-muted mx-auto mb-2" />
+                      <p className="text-geo-text-muted text-sm">Sin datos para mostrar</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -267,12 +341,40 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64 bg-geo-darker rounded-lg flex items-center justify-center">
-                  <div className="text-center">
-                    <TrendingUp className="h-8 w-8 text-geo-text-muted mx-auto mb-2" />
-                    <p className="text-geo-text-muted text-sm">Sin datos para mostrar</p>
+                {chartData.distributionChart.length > 0 ? (
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={chartData.distributionChart} 
+                          cx="50%" 
+                          cy="50%" 
+                          outerRadius={80}
+                          dataKey="value"
+                        >
+                          {chartData.distributionChart.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: '#1e2329', 
+                            border: '1px solid #2a3038',
+                            borderRadius: '6px',
+                            color: '#e4e7eb'
+                          }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
-                </div>
+                ) : (
+                  <div className="h-64 bg-geo-darker rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <TrendingUp className="h-8 w-8 text-geo-text-muted mx-auto mb-2" />
+                      <p className="text-geo-text-muted text-sm">Sin datos para mostrar</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -284,12 +386,34 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64 bg-geo-darker rounded-lg flex items-center justify-center">
-                  <div className="text-center">
-                    <Smartphone className="h-8 w-8 text-geo-text-muted mx-auto mb-2" />
-                    <p className="text-geo-text-muted text-sm">Sin datos para mostrar</p>
+                {deviceAnalysis.length > 0 ? (
+                  <div className="space-y-3 max-h-64 overflow-y-auto">
+                    {deviceAnalysis.slice(0, 4).map((device, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-geo-darker rounded-lg">
+                        <div className="flex items-center">
+                          <div className={`h-2 w-2 rounded-full mr-3 ${
+                            device.status === 'active' ? 'bg-green-400' : 'bg-gray-400'
+                          }`}></div>
+                          <div>
+                            <p className="text-white font-medium text-sm">{device.device}</p>
+                            <p className="text-geo-text-muted text-xs">Último: {device.lastActive}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-bold text-white">{device.events}</p>
+                          <p className="text-geo-text-muted text-xs">eventos</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
+                ) : (
+                  <div className="h-64 bg-geo-darker rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <Smartphone className="h-8 w-8 text-geo-text-muted mx-auto mb-2" />
+                      <p className="text-geo-text-muted text-sm">Sin datos para mostrar</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
