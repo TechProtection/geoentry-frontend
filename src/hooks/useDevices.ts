@@ -51,15 +51,15 @@ export const useDevices = () => {
     queryFn: fetchMyDevices,
     enabled: !!session?.user?.id,
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000, // 5 minutos
+    staleTime: 5 * 60 * 1000, 
   });
 };
 
 export const useDeviceStats = (devices: Device[] = []) => {
   const totalDevices = devices.length;
-  const activeDevices = devices.length; // Asumiendo que todos están activos por ahora
-  const devicesOutOfZone = 0; // Implementar lógica según ubicación
-  const inactiveDevices = 0; // Implementar lógica según última actividad
+  const activeDevices = devices.length; 
+  const devicesOutOfZone = 0; 
+  const inactiveDevices = 0; 
 
   return {
     totalDevices,
