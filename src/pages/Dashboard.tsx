@@ -7,7 +7,8 @@ import {
   MapPin,
   Smartphone,
   TrendingUp,
-  Calendar
+  Calendar,
+  Lightbulb
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -29,21 +30,24 @@ import { useDevices, useDeviceStats } from '@/hooks/useDevices';
 import { useLocations, useLocationStats } from '@/hooks/useLocations';
 import { useEvents, useEventStats } from '@/hooks/useEvents';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { useSensors, useSensorStats, getSensorTypeName, getSensorTypeIcon } from '@/hooks/useSensors';
 import InteractiveMap from '@/components/InteractiveMap';
 
 export default function Dashboard() {
   const { data: devices = [], isLoading: devicesLoading } = useDevices();
   const { data: locations = [], isLoading: locationsLoading } = useLocations();
   const { data: events = [], isLoading: eventsLoading } = useEvents();
+  const { data: sensors = [], isLoading: sensorsLoading } = useSensors();
   const deviceStats = useDeviceStats(devices);
   const locationStats = useLocationStats(locations);
   const eventStats = useEventStats(events);
+  const sensorStats = useSensorStats(sensors);
   const { chartData, deviceAnalysis } = useAnalytics();
 
   const statsCards = [
     { title: 'Ubicaciones', value: locationStats.totalLocations.toString(), icon: MapPin, color: 'text-blue-400' },
     { title: 'Dispositivos', value: deviceStats.totalDevices.toString(), icon: Smartphone, color: 'text-green-400' },
-    { title: 'Eventos Total', value: eventStats.totalEvents.toString(), icon: Activity, color: 'text-purple-400' },
+    { title: 'Sensores', value: sensorStats.totalSensors.toString(), icon: Lightbulb, color: 'text-yellow-400' },
     { title: 'Eventos Hoy', value: eventStats.todayEvents.toString(), icon: Calendar, color: 'text-orange-400' },
   ];
 
@@ -110,7 +114,7 @@ export default function Dashboard() {
           </div>
 
           {}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {}
             <Card className="bg-geo-gray border-geo-gray-light">
               <CardHeader>
@@ -172,7 +176,7 @@ export default function Dashboard() {
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <Smartphone className="h-5 w-5 mr-2" />
-                  Dispositivos
+                  Mis Celulares
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -208,6 +212,65 @@ export default function Dashboard() {
                     <div className="text-center pt-2">
                       <p className="text-geo-text-muted text-sm">
                         +{devices.length - 3} dispositivos más
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Dispositivos Inteligentes */}
+            <Card className="bg-geo-gray border-geo-gray-light">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center">
+                  <Lightbulb className="h-5 w-5 mr-2" />
+                  Dispositivos Inteligentes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {sensorsLoading ? (
+                    <div className="text-geo-text-muted text-center py-4">
+                      Cargando sensores...
+                    </div>
+                  ) : sensors.length === 0 ? (
+                    <div className="text-geo-text-muted text-center py-4">
+                      No hay sensores registrados
+                    </div>
+                  ) : (
+                    sensors.slice(0, 3).map((sensor) => (
+                      <div key={sensor.id} className="flex items-center justify-between p-4 bg-geo-darker rounded-md">
+                        <div className="flex items-center">
+                          <div className={`h-2 w-2 rounded-full mr-3 ${
+                            sensor.isActive ? 'bg-green-400' : 'bg-gray-400'
+                          }`}></div>
+                          <div>
+                            <p className="text-white font-medium flex items-center">
+                              <span className="mr-2">{getSensorTypeIcon(sensor.sensor_type)}</span>
+                              {sensor.name}
+                            </p>
+                            <p className="text-geo-text-muted text-sm">{getSensorTypeName(sensor.sensor_type)}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            sensor.isActive 
+                              ? 'bg-green-600 text-white' 
+                              : 'bg-gray-600 text-gray-300'
+                          }`}>
+                            {sensor.isActive ? 'Activo' : 'Inactivo'}
+                          </span>
+                          <p className="text-geo-text-muted text-xs mt-1">
+                            {getSensorTypeName(sensor.sensor_type)}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  {sensors.length > 3 && (
+                    <div className="text-center pt-2">
+                      <p className="text-geo-text-muted text-sm">
+                        +{sensors.length - 3} sensores más
                       </p>
                     </div>
                   )}
