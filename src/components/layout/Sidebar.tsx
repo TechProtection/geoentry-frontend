@@ -36,7 +36,7 @@ export function Sidebar() {
   };
 
   return (
-    <div className="w-64 bg-geo-gray border-r border-geo-gray-light flex flex-col">
+    <div className="w-64 h-screen bg-geo-gray border-r border-geo-gray-light flex flex-col flex-shrink-0">
       {/* Logo */}
       <div className="p-6 border-b border-geo-gray-light">
         <div className="flex items-center">
