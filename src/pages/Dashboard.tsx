@@ -46,8 +46,8 @@ export default function Dashboard() {
 
   const statsCards = [
     { title: 'Ubicaciones', value: locationStats.totalLocations.toString(), icon: MapPin, color: 'text-blue-400' },
-    { title: 'Dispositivos', value: deviceStats.totalDevices.toString(), icon: Smartphone, color: 'text-green-400' },
-    { title: 'Sensores', value: sensorStats.totalSensors.toString(), icon: Lightbulb, color: 'text-yellow-400' },
+    { title: 'Mis Celulares', value: deviceStats.totalDevices.toString(), icon: Smartphone, color: 'text-green-400' },
+    { title: 'Dispositivos Inteligentes', value: sensorStats.totalSensors.toString(), icon: Lightbulb, color: 'text-yellow-400' },
     { title: 'Eventos Hoy', value: eventStats.todayEvents.toString(), icon: Calendar, color: 'text-orange-400' },
   ];
 
