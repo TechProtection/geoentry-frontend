@@ -50,7 +50,6 @@ export const useAnalytics = () => {
   const { data: devices = [] } = useDevices();
   const { data: locations = [] } = useLocations();
 
-  // Métricas principales
   const metrics: AnalyticsMetrics = useMemo(() => {
     const today = new Date();
     const todayEvents = events.filter(event => {
@@ -85,7 +84,6 @@ export const useAnalytics = () => {
     };
   }, [events, devices, locations]);
 
-  // Análisis de tiempo por ubicación
   const timeAnalysis: TimeAnalysis[] = useMemo(() => {
     if (!events.length || !locations.length) return [];
 
@@ -99,7 +97,6 @@ export const useAnalytics = () => {
       let totalTimeInside = 0;
       let validPairs = 0;
 
-      // Calcular tiempo dentro de cada ubicación
       enterEvents.forEach(enterEvent => {
         const correspondingExit = exitEvents.find(exitEvent =>
           exitEvent.device_id === enterEvent.device_id &&
@@ -116,7 +113,6 @@ export const useAnalytics = () => {
         }
       });
 
-      // Calcular tiempo fuera (aproximado)
       const totalTimeOutside = validPairs > 0 ? Math.max(0, (locationEvents.length * 60) - totalTimeInside) : 0;
 
       analysis.push({
@@ -131,13 +127,11 @@ export const useAnalytics = () => {
     return analysis.filter(item => item.totalEvents > 0);
   }, [events, locations]);
 
-  // Análisis de actividad por horas
   const activityAnalysis: ActivityData[] = useMemo(() => {
     if (!events.length) return [];
 
     const activityByHour: { [key: string]: ActivityData } = {};
 
-    // Inicializar todas las horas
     for (let hour = 0; hour < 24; hour++) {
       const hourStr = hour.toString().padStart(2, '0') + ':00';
       activityByHour[hourStr] = {
@@ -148,7 +142,6 @@ export const useAnalytics = () => {
       };
     }
 
-    // Contar eventos por hora
     events.forEach(event => {
       const hour = new Date(event.created_at || '').getHours();
       const hourStr = hour.toString().padStart(2, '0') + ':00';
@@ -164,7 +157,6 @@ export const useAnalytics = () => {
     return Object.values(activityByHour);
   }, [events]);
 
-  // Análisis de dispositivos
   const deviceAnalysis: DeviceActivity[] = useMemo(() => {
     if (!events.length || !devices.length) return [];
 
@@ -188,7 +180,6 @@ export const useAnalytics = () => {
     return analysis.sort((a, b) => b.events - a.events);
   }, [events, devices]);
 
-  // Distribución de eventos por ubicación
   const eventDistribution: EventDistribution[] = useMemo(() => {
     if (!events.length || !locations.length) return [];
 
@@ -201,7 +192,6 @@ export const useAnalytics = () => {
     return distribution;
   }, [events, locations]);
 
-  // Datos formateados para los gráficos
   const chartData = useMemo(() => ({
     timeChart: timeAnalysis.map(item => ({
       location: item.location,
@@ -219,7 +209,7 @@ export const useAnalytics = () => {
     deviceAnalysis,
     eventDistribution,
     chartData,
-    isLoading: false, // Ya que dependemos de hooks que manejan su propio loading
+    isLoading: false,
   };
 };
 

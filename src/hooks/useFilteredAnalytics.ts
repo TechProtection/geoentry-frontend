@@ -34,7 +34,7 @@ export const useFilteredAnalytics = () => {
         break;
       case 'all':
       default:
-        startDate = new Date(0); // Desde el inicio de los tiempos
+        startDate = new Date(0);
         break;
     }
 
@@ -57,12 +57,10 @@ export const useFilteredAnalytics = () => {
     };
   }, [allEvents, dateRange]);
 
-  // Estadísticas de tendencias
   const trends = useMemo(() => {
     const { events } = filteredData;
     const now = new Date();
     
-    // Comparar con el período anterior
     const periodDays = dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : dateRange === '90d' ? 90 : 365;
     const previousStart = subDays(filteredData.startDate, periodDays);
     const previousEnd = filteredData.startDate;
@@ -87,7 +85,6 @@ export const useFilteredAnalytics = () => {
     };
   }, [filteredData, allEvents, dateRange]);
 
-  // Eventos por día
   const dailyEvents = useMemo(() => {
     const { events } = filteredData;
     const dailyCount: { [key: string]: number } = {};

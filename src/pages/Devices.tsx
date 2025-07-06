@@ -48,7 +48,7 @@ export default function Devices() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Dispositivos</h1>
@@ -56,7 +56,7 @@ export default function Devices() {
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => (
           <Card key={index} className="bg-geo-gray border-geo-gray-light">
@@ -75,7 +75,7 @@ export default function Devices() {
         ))}
       </div>
 
-      {/* Device List */}
+      {}
       <Card className="bg-geo-gray border-geo-gray-light">
         <CardContent className="p-6">
           <div className="space-y-4">

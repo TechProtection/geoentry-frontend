@@ -56,7 +56,7 @@ export default function Analytics() {
   }
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Analíticas</h1>
@@ -81,7 +81,7 @@ export default function Analytics() {
         </div>
       </div>
 
-      {/* Trends Card */}
+      {}
       <Card className="bg-geo-gray border-geo-gray-light">
         <CardHeader>
           <CardTitle className="text-white flex items-center">
@@ -158,7 +158,7 @@ export default function Analytics() {
         </CardContent>
       </Card>
 
-      {/* Stats Cards */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => (
           <Card key={index} className="bg-geo-gray border-geo-gray-light">
@@ -177,7 +177,7 @@ export default function Analytics() {
         ))}
       </div>
 
-      {/* Comparación Entradas vs Salidas */}
+      {}
       <Card className="bg-geo-gray border-geo-gray-light">
         <CardHeader>
           <CardTitle className="text-white flex items-center">
@@ -216,9 +216,9 @@ export default function Analytics() {
         </CardContent>
       </Card>
 
-      {/* Charts Grid */}
+      {}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Time Analysis Chart */}
+        {}
         <Card className="bg-geo-gray border-geo-gray-light">
           <CardHeader>
             <CardTitle className="text-white flex items-center">
@@ -262,7 +262,7 @@ export default function Analytics() {
           </CardContent>
         </Card>
 
-        {/* Hourly Activity Chart */}
+        {}
         <Card className="bg-geo-gray border-geo-gray-light">
           <CardHeader>
             <CardTitle className="text-white flex items-center">
@@ -314,7 +314,7 @@ export default function Analytics() {
           </CardContent>
         </Card>
 
-        {/* Event Distribution Chart */}
+        {}
         <Card className="bg-geo-gray border-geo-gray-light">
           <CardHeader>
             <CardTitle className="text-white flex items-center">
@@ -357,7 +357,7 @@ export default function Analytics() {
           </CardContent>
         </Card>
 
-        {/* Device Analysis */}
+        {}
         <Card className="bg-geo-gray border-geo-gray-light">
           <CardHeader>
             <CardTitle className="text-white flex items-center">
@@ -396,7 +396,7 @@ export default function Analytics() {
         </Card>
       </div>
 
-      {/* Detailed Statistics */}
+      {}
       {timeAnalysis.length > 0 && (
         <Card className="bg-geo-gray border-geo-gray-light">
           <CardHeader>

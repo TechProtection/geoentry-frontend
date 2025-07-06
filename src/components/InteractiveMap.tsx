@@ -9,10 +9,8 @@ import { useDevices } from '@/hooks/useDevices';
 import { useEvents } from '@/hooks/useEvents';
 import { MapPin, Home, Smartphone, Activity } from 'lucide-react';
 
-// Importar CSS de Leaflet
 import 'leaflet/dist/leaflet.css';
 
-// Fix para iconos por defecto de Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -20,7 +18,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Componente principal del mapa
 const InteractiveMap: React.FC = () => {
   const [mapCenter, setMapCenter] = useState<LatLngTuple>([-12.0677512, -77.0664982]);
   const [mapZoom, setMapZoom] = useState(13);
@@ -29,22 +26,18 @@ const InteractiveMap: React.FC = () => {
   const { data: devices = [], isLoading: devicesLoading } = useDevices();
   const { data: events = [] } = useEvents();
 
-  // Actualizar el centro del mapa con la última ubicación del usuario
   useEffect(() => {
     if (locations && locations.length > 0) {
-      // Ordenar las ubicaciones por fecha de creación (más reciente primero)
       const sortedLocations = [...locations].sort((a, b) => {
         const dateA = new Date(a.created_at || 0).getTime();
         const dateB = new Date(b.created_at || 0).getTime();
-        return dateB - dateA; // Orden descendente (más reciente primero)
+        return dateB - dateA; 
       });
       
       const lastLocation = sortedLocations[0];
       setMapCenter([lastLocation.latitude, lastLocation.longitude]);
       
-      // Opcional: ajustar el zoom basado en el radio de la ubicación
       if (lastLocation.radius) {
-        // Calcular zoom apropiado basado en el radio
         const zoomLevel = lastLocation.radius > 1000 ? 11 : 
                          lastLocation.radius > 500 ? 13 : 
                          lastLocation.radius > 100 ? 15 : 16;
